@@ -18,3 +18,5 @@ fn run() -> Result<(), Box<dyn Error>> {
     }
     Ok(())
 }
+
+// the ? - important to note that it can only be used in functions that return Result
