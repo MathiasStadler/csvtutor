@@ -56,19 +56,30 @@ use std::{env, error::Error, ffi::OsString, io, process};
 fn run() -> Result<(), Box<dyn Error>> {
     let mut rdr = csv::Reader::from_reader(io::stdin());
     {
+        let s = "Hello";
+        let i = 42;
+
+        // FROM HERE
+        // https://stackoverflow.com/questions/21747136/how-do-i-print-in-rust-the-type-of-a-variable
+        // print_type_of(&s); // &str
+        // print_type_of(&i); // i32
+        // print_type_of(&main); // playground::main
+        // print_type_of(&print_type_of::<i32>); // playground::print_type_of<i32>
+        // print_type_of(&{ || "Hi!" }); // playground::main::{{closure}}
+
         // We nest this call in its own scope because of lifetimes.
         // let headers = rdr.headers()?;
         // print!("{:} => "," headers");
         // println!("{:?}", headers);
 
         for result in rdr.headers() {
-
-                println!("Header => {:?}", result);
-                let record = result;
-                for field in record {
-                    println!(" Here => {:?}", field);
-                }
-           
+            print!("Header => {:?} ", result);
+            print_type_of(&result);
+            let record = result;
+            for field in record {
+                print!("field => {:?} ", field);
+                print_type_of(&field);
+            }
         }
     }
 
@@ -81,13 +92,13 @@ fn run() -> Result<(), Box<dyn Error>> {
     // https://users.rust-lang.org/t/transform-stringrecord-to-string/54195/2
     for result in rdr.records() {
         let record = result?;
-        
-        println!("{:?}", "new line");
+
+        println!("{:?} : {:} items ", "new line =>", record.len());
         for field in &record {
-            print!("{:?}", field);
+            print!("field => {:?} ", field);
+            print_type_of(&field);
         }
         println!("");
-        
     }
 
     // We can ask for the headers at any time. There's no need to nest this
@@ -97,6 +108,10 @@ fn run() -> Result<(), Box<dyn Error>> {
     // let headers = rdr.headers()?;
     // println!("{:?}", headers);
     Ok(())
+}
+
+fn print_type_of<T>(_: &T) {
+    println!("type => {}", std::any::type_name::<T>())
 }
 
 /// Returns the first positional argument sent to this process. If there are no
