@@ -2,12 +2,20 @@
 // https://docs.rs/csv/latest/csv/tutorial/index.html
 
 //tutorial-read-01.rs
-use std::{env, error::Error, ffi::OsString, fs::File, process};
+// use std::{env, error::Error, ffi::OsString, fs::File, process};
+use std::{env, error::Error, ffi::OsString, process};
 
 fn run() -> Result<(), Box<dyn Error>> {
+    
+    // /w file
+    // let file_path = get_first_arg()?;
+    // let file = File::open(file_path)?;
+    // let mut rdr = csv::Reader::from_reader(file);
+
+    // shorter 
     let file_path = get_first_arg()?;
-    let file = File::open(file_path)?;
-    let mut rdr = csv::Reader::from_reader(file);
+    let mut rdr = csv::Reader::from_path(file_path)?;
+
     for result in rdr.records() {
         let record = result?;
         println!("{:?}", record);
